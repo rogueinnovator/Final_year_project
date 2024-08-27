@@ -8,7 +8,6 @@ const API_URL = process.env.API_URL;
 const contractABIPromise = import(
   "../blockchain/build/contracts/CriminalDataSender.json"
 ).then((module) => module.abi);
-
 let web3Instance;
 
 // Function to initialize or retrieve the Web3 instance
@@ -25,4 +24,3 @@ export async function getContractInstance() {
   const contractABI = await contractABIPromise;
   return new web3.eth.Contract(contractABI, CONTRACT_ADDRESS);
 }
-    

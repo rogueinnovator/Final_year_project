@@ -22,7 +22,7 @@ export async function GET(request, { params }) {
     const gasPrice = await web3.eth.getGasPrice();
     const tx = {
       from: ADDRESS,
-      t0: CONTRACT_ADDRESS,
+      to: CONTRACT_ADDRESS,
       gas: gas,
       gasPrice: gasPrice,
       data: data,

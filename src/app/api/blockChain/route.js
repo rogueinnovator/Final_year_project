@@ -1,43 +1,76 @@
-//make a dbconnection
-const ADDRESS = process.env.ADDRESS;
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESSI;
+import sanitizeData from "@/helper/sanitizeData";
 import { getContractInstance, getWeb3Instance } from "@/helper/web3connection";
-import { estimateGas } from "web3/lib/commonjs/eth.exports";
+import { NextResponse } from "next/server";
+const ADDRESS = process.env.ADDRESS;
+const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
 const contractInstance = await getContractInstance();
-const web3 = getWeb3Instance();
-//get all the criminals
+//1.get all the criminals
 export async function GET() {
   try {
-    const DAta = await contractInstance.methods
+    const gasEstimation = await contractInstance.methods
       .getAllCriminals()
-      .call({ from: ADDRESS });
-  } catch (error) {}
+      .estimateGas({ from: ADDRESS });
+    const result = await contractInstance.methods.getAllCriminals().call();
+    // const result = await contractInstance.methods
+    //   .getAllCriminals()
+    //   .call({ from: ADDRESS ,gasEstimation:67219751212312});
+    const Data = sanitizeData(result);
+    console.log(
+      `Data of all the criminals is :${Data} this is non_sanatized data ${result}`,
+    );
+    return NextResponse.json(
+      { Data },
+
+      {
+        status: 200,
+      },
+      {
+        success: true,
+      },
+      {
+        messsage: "Data fetched successfully",
+      },
+    );
+  } catch (error) {
+    console.error("Error while retrieving the data:", error);
+
+    // Return error response as JSON
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Error while retrieving the data",
+        error: error.message,
+      },
+      { status: 500 },
+    );
+  }
 }
-//1.Saving Criminal data to the block_chain
+
+//2.Saving Criminal data to the block_chain
 export async function POST(request) {
-  const { name, id, cnic, sensitivity } = request.body;
+  console.log("called b");
+  // const contractInstance = await getContractInstance();
+
+  const { name, id, cnic, sensitivity } = await request.json();
   try {
-    const contractInstance = await getContractInstance();
-    const gasEstimate = await contractInstance.methods
+    const gasEstimation = await contractInstance.methods
       .CreateEntity(name, id, cnic, sensitivity)
       .estimateGas({ from: ADDRESS });
-    const tx = {
-      from: ADDRESS,
-      to: CONTRACT_ADDRESS,
-      gas: estimateGas,
-      data: contractInstance.methods
-        .CreateEntity(name, id, cnic, sensitivity)
-        .encodeABI(),
-    }.console.log(`Transaction Hash : ${tx.transactionHash}`);
+    const tx = await contractInstance.methods
+      .CreateEntity(name, id, cnic, sensitivity)
+      .send({ from: ADDRESS, gas: gasEstimation, gasPrice: 20000000000 });
+    console.log(`Transaction Hash : ${tx.transactionHash}`);
+    const TH = tx.transactionHash;
     return NextResponse.json(
       {
         message: "Data Added successfully",
         success: true,
       },
+      { TH },
       { status: 200 },
     );
   } catch (error) {
-    console.error(`error storing criminla info ${error}`);
+    console.error(`error storing criminalI info ${error}`);
     return NextResponse.json({ error: "Error storing data" }, { status: 500 });
   }
 }
