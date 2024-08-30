@@ -4,10 +4,10 @@ const nextConfig = {
     BASE_URL: "http://localhost:3000/api/",
     MONGO_DB_URL: "mongodb://localhost:27017/",
     SECRET_KEY: "alchmh1islfail",
-    API_URL: "http://127.0.0.1:8545",
-    CONTRACT_ADDRESS: "0x1d3d2aC88ba9C0e6569CB6Ae0719aD56e9beAe52",
-    ADDRESS: "0x7Be8337C722e43d298b524133463167beFBec66a",
-    PRIVATE_KEY:"0xb9bc4cf488b0e70f6e6dec5e116c9f037c2f9bd2bf9f64db5566f550bd396bdc"
+    API_URL: "http://127.0.0.1:7545",
+    CONTRACT_ADDRESS: "0xd342CF6d138E7B5d20e0773079bF118e42A9C44b",
+    ADDRESS: "0x40f0DFEdb5133Dc47f11231f1A96C6BB4949eac1",
+    PRIVATE_KEY:"0xe2c646bf413991b9ec3ab1f7b2ed9af57ccc35502d8e23a342d52ac5278a44e6"
   },
 };
 export default nextConfig;
