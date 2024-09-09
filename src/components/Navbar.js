@@ -3,31 +3,41 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import MetaMask from "../helper/MetaMask";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useAppContext } from "@/context/myContext";
+import { logOut } from "@/services/userServices";
 const Navbar = () => {
+  const router = new useRouter();
+  const handleLogout = async () => {
+    await logOut();
+    router.push( "/signIn" );
+  };
+  const { user } = useAppContext();
   const initialState = { account: [], balance: "", chainId: "" };
-  const [wallet, setWallet] = useState(initialState);
-  const [disableConnect, setDisableConnect] = useState(false);
+  const [wallet, setWallet] = useState( initialState );
+  const [disableConnect, setDisableConnect] = useState( false );
   const pathname = usePathname();
   const handleConnect = async () => {
-    try {
-      console.log("this is called");
-
+    try
+    {
       const [ethAccount, chainId, balance] = await MetaMask();
-      setWallet({ account: [ethAccount], balance, chainId });
-      console.log("this is pressed2");
-      setDisableConnect(Boolean(ethAccount && balance && chainId));
+      setWallet( { account: [ethAccount], balance, chainId } );
+      console.log( "this is pressed2" );
+      setDisableConnect( Boolean( ethAccount && balance && chainId ) );
       console.log(
-        `this is eth account ${ethAccount}, this is balance ${balance}, this is chainId ${chainId}, this is disableConnect ${disableConnect}`,
+        `this is eth account ${ ethAccount }, this is balance ${ balance }, this is chainId ${ chainId }, this is disableConnect ${ disableConnect }`,
       );
-    } catch (error) {
-      console.error(error);
+    } catch ( error )
+    {
+      console.error( error );
     }
   };
 
-  if (pathname === "/signin") {
+  if ( pathname === "/signIn" || pathname === "/signUp" )
+  {
     return null;
-  } else {
+  } else
+  {
     return (
       <div className="navbar bg-transparent">
         <div className="flex-1">
@@ -43,16 +53,14 @@ const Navbar = () => {
           <div className="flex justify-between">
             <Link
               href="/home"
-              className={`btn btn-ghost ml-24 rounded-full font-mono text-2xl tracking-widest ${
-                pathname === "/home" ? "underline" : ""
-              }`}
+              className={ `btn btn-ghost ml-24 rounded-full font-mono text-2xl tracking-widest ${ pathname === "/home" ? "underline" : ""
+                }` }
             >
               Home
             </Link>
             <Link
-              className={`btn btn-ghost ml-24 rounded-full  font-mono text-2xl tracking-widest ${
-                pathname === "/about" ? "underline" : ""
-              }`}
+              className={ `btn btn-ghost ml-24 rounded-full  font-mono text-2xl tracking-widest ${ pathname === "/about" ? "underline" : ""
+                }` }
               href="/about"
             >
               About
@@ -67,17 +75,18 @@ const Navbar = () => {
         </div>
 
         <button
-          className={`btn btn-outline rounded-full text-lg mr-10  ${
-            disableConnect
-              ? "cursor-not-allowed opacity-50 rounded-full"
-              : "border-gray-300"
-          }`}
-          onClick={() => {
+          className={ `btn btn-outline rounded-full text-lg mr-10  ${ disableConnect
+            ? "cursor-not-allowed opacity-50 rounded-full"
+            : "border-gray-300"
+            }` }
+          onClick={ () => {
             handleConnect();
-          }}
-          disabled={disableConnect}
+          } }
+          disabled={ disableConnect }
         >
-          {wallet?.account.length > 0 ? "Connected" : "Connect to Metamask"}
+          { ( wallet?.account.length > 0 ) & disableConnect
+            ? "Connected"
+            : "Connect to Metamask" }
         </button>
 
         <div className="flex-none gap-2">
@@ -90,7 +99,7 @@ const Navbar = () => {
           </div>
           <div className="dropdown dropdown-end">
             <div
-              tabIndex={0}
+              tabIndex={ 0 }
               role="button"
               className="btn btn-ghost btn-circle avatar"
             >
@@ -98,57 +107,62 @@ const Navbar = () => {
                 <Image
                   alt="Tailwind CSS Navbar component"
                   src="/images/profile.jpg"
-                  width={56}
-                  height={56}
+                  width={ 56 }
+                  height={ 56 }
                 />
               </div>
             </div>
             <ul
-              tabIndex={0}
+              tabIndex={ 0 }
               className="menu menu-lg dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-72 p-2 shadow"
             >
               <li>
                 <div className="justify-between text-sm">
                   Name
-                  <div className="text-sm text-red-900">Huzaifa</div>
+                  <div className="font-bold text-blue-900">{ user?.name }</div>
+                </div>
+              </li>
+              <li>
+                <div className="justify-between text-sm">
+                  email
+                  <div className="text-sm text-blue-900">{ user?.email }</div>
                 </div>
               </li>
               <li>
                 <div className="justify-between text-pretty">
                   address
-                  <div className="text-sm text-red-900">l
-                  
-                    {wallet.account[0]
-                      ? `${wallet.account[0].substring(
-                          0,
-                          8,
-                        )}...${wallet?.account[0].substring(
-                          wallet?.account[0].length - 4,
-                        )}`
-                      : "no accounts"}
+                  <div className="text-sm text-red-900">
+                    { wallet.account[0]
+                      ? `${ wallet.account[0].substring(
+                        0,
+                        8,
+                      ) }...${ wallet?.account[0].substring(
+                        wallet?.account[0].length - 4,
+                      ) }`
+                      : "Connect to MetaMask" }
                   </div>
                 </div>
               </li>
               <li>
                 <div className="justify-between text-sm">
                   Balance
-                  <div className="text-sm text-red-900">{wallet.balance} </div>
+                  <div className="text-sm text-red-900">{ wallet.balance } </div>
                 </div>
               </li>
               <li>
                 <div className="justify-between text-sm">
-                  {" "}
-                  Chain ID{" "}
+                  { "" }
+                  Chain ID{ "" }
                   <div className="text-sm text-red-900">
-                    {" "}
-                    {wallet.chainId}
-                  </div>{" "}
+                    { "" }
+                    { wallet.chainId }
+                  </div>{ "" }
                 </div>
               </li>
               <li className="justify-center">
-                <Link className="justify-center" href="/signin">
+                <button className="justify-center" onClick={ handleLogout }>
                   Logout
-                </Link>
+                </button>
               </li>
             </ul>
           </div>

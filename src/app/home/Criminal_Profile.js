@@ -1,19 +1,21 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-
+import { useAppContext } from "@/context/myContext";
 const Criminal_Profile = () => {
+  const { user } = useAppContext();
+
   return (
     // <div className="flex-auto justify-between">
     <div className="card bg-base-100 w-2/3 shadow-xl">
-      {" "}
+      { " " }
       <div className="rounded-t-lg h-32 overflow-hidden">
         <Image
           className="object-cover object-top w-full"
           src="/images/pic2.jpg"
           alt="Mountain"
-          width={800}
-          height={800}
+          width={ 800 }
+          height={ 800 }
         />
       </div>
       <div className="mx-auto w-32 h-32 relative -mt-16 border-4 border-white rounded-full overflow-hidden">
@@ -21,8 +23,8 @@ const Criminal_Profile = () => {
           className="object-cover object-center h-32"
           src="/images/profile.jpg"
           alt="Woman looking front"
-          width={150}
-          height={100}
+          width={ 150 }
+          height={ 100 }
         />
       </div>
       <div className="text-center mt-2">
@@ -35,7 +37,7 @@ const Criminal_Profile = () => {
             <tr className="hover">
               <th></th>
               <td className="font-bold text-white">Name</td>
-              <td>Huzaifa</td>
+              <td>{ user?.email }</td>
             </tr>
             <tr className="hover">
               <th></th>
@@ -74,7 +76,7 @@ const Criminal_Profile = () => {
           Edit
         </button>
         <button className="btn btn-outline btn-warning rounded-full mx-auto px-4">
-          Delete{" "}
+          Delete{ " " }
         </button>
       </div>
     </div>

@@ -1,16 +1,13 @@
 "use server";
 import mongoose from "mongoose";
 let isConnected = false;
+const mongoUrl = process.env.MONGO_DB_URL;
 export const connectDb = async () => {
   if (isConnected) {
     console.log("Already connected to the database");
     return;
   }
   try {
-    const mongoUrl = process.env.MONGO_DB_URL;
-    if (!mongoUrl) {
-      throw new Error("MONGO_DB_URL is undefined");
-    }
     const { connection } = await mongoose.connect(mongoUrl, {
       dbName: "CIMS",
     });

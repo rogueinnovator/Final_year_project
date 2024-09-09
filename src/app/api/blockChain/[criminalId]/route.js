@@ -5,7 +5,7 @@ const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
 const ADDRESS = process.env.ADDRESS;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
-//2.GET the criminal data usig the criminalId from block_chain
+//2.GET the criminal data using the criminalId from block_chain
 export async function GET(request) {
   const searchParams = request.nextUrl.searchParams;
   const CNIC = searchParams.get("CNIC");
@@ -26,7 +26,7 @@ export async function GET(request) {
         success: true,
       },
       {
-        messsage: "data fetched successfully",
+        message: "data fetched successfully",
       },
     );
   } catch (error) {
@@ -65,7 +65,7 @@ export async function DELETE(request) {
       },
     );
   } catch (error) {
-    console.error(`erorr while deleting the data ${error}`);
+    console.error(`error while deleting the data ${error}`);
     return NextResponse.json(
       {
         message: "error while deleting entity",
