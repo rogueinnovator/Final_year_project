@@ -4,11 +4,9 @@ import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import { connectDb } from "@/helper/db";
 connectDb();
-//1..SignIn logic
-export async function POST ( request ) {
-  const secretKey = process.env.SECRET_KEY;
+export async function POST ( request )
+{
   const { email, password } = await request.json();
-  console.log( `${ email } from route .js` );
   try
   {
     //1. Check if user with the given email exists
@@ -40,10 +38,10 @@ export async function POST ( request ) {
     //3. Generate auth token (if password matches)
     const token = jwt.sign(
       {
-        id: user.id,
+        id: user._id,
         name: user.name,
       },
-      secretKey,
+      process.env.SECRET_KEY,
       { expiresIn: "1d" }, // Include token expiry
     );
 

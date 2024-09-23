@@ -5,7 +5,8 @@ import { connectDb } from "@/helper/db";
 export async function GET() {
   let users = [];
   try {
-    users = await User.find().select(-password);
+    users = await User.find().select("-password");
+    console.log("this is the user data", users);
     if (users) {
       return NextResponse.json({
         message: "users successfully retrieved",

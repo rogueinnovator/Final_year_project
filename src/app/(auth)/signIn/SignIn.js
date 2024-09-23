@@ -5,35 +5,40 @@ import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
-const SignIn = () => {
+const SignIn = () =>
+{
   const router = new useRouter();
   const { setUser } = useAppContext();
-  const [emailError, setEmailError] = useState( "" );
-  const [credentials, setCredentials] = useState( {
+  const [ emailError, setEmailError ] = useState( "" );
+  const [ credentials, setCredentials ] = useState( {
     email: "",
     password: "",
   } );
   const mutation = useMutation( {
     mutationFn: signIn,
-    onSuccess: ( data ) => {
+    onSuccess: ( data ) =>
+    {
       console.log( `sign in successfully  `, data );
       setUser( data.user );
       router.push( "/home" );
     },
-    onError: ( error ) => {
+    onError: ( error ) =>
+    {
       console.error( `error while signing in`, error );
     }
 
   } );
-  const handleSignIn = async ( event ) => {
+  const handleSignIn = async ( event ) =>
+  {
     event.preventDefault();
     mutation.mutate( credentials );
   };
 
   //2.handle the change in the form field and set the credentials accordingly
-  const onChange = ( e ) => {
+  const onChange = ( e ) =>
+  {
     const { name, value } = e.target;
-    setCredentials( { ...credentials, [name]: value } );
+    setCredentials( { ...credentials, [ name ]: value } );
     if ( name === "email" )
     {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

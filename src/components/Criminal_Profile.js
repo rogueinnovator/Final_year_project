@@ -1,9 +1,10 @@
 "use client";
-import React from "react";
-import Image from "next/image";
 import { useAppContext } from "@/context/myContext";
-const Criminal_Profile = () => {
+import Image from "next/image";
+const Criminal_Profile = () =>
+{
   const { user } = useAppContext();
+  console.log( "user", user );
 
   return (
     // <div className="flex-auto justify-between">
@@ -56,7 +57,7 @@ const Criminal_Profile = () => {
             <tr className="hover">
               <th></th>
               <td className="font-bold text-white">crime details</td>
-              <td>poqhwd98hq[98</td>
+              <td>poqhwd98hq98</td>
             </tr>
             <tr className="hover">
               <th></th>
@@ -80,8 +81,10 @@ const Criminal_Profile = () => {
         </button>
       </div>
     </div>
+
     // </div>
   );
 };
 
 export default Criminal_Profile;
+

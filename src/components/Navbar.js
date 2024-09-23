@@ -6,22 +6,26 @@ import MetaMask from "../helper/MetaMask";
 import { usePathname, useRouter } from "next/navigation";
 import { useAppContext } from "@/context/myContext";
 import { logOut } from "@/services/userServices";
-const Navbar = () => {
+const Navbar = () =>
+{
   const router = new useRouter();
-  const handleLogout = async () => {
+  const handleLogout = async () =>
+  {
     await logOut();
     router.push( "/signIn" );
   };
-  const { user } = useAppContext();
+  const { user, isAuthenticated, Admin } = useAppContext();
+  console.log( "this is authentication", isAuthenticated );
   const initialState = { account: [], balance: "", chainId: "" };
-  const [wallet, setWallet] = useState( initialState );
-  const [disableConnect, setDisableConnect] = useState( false );
+  const [ wallet, setWallet ] = useState( initialState );
+  const [ disableConnect, setDisableConnect ] = useState( false );
   const pathname = usePathname();
-  const handleConnect = async () => {
+  const handleConnect = async () =>
+  {
     try
     {
-      const [ethAccount, chainId, balance] = await MetaMask();
-      setWallet( { account: [ethAccount], balance, chainId } );
+      const [ ethAccount, chainId, balance ] = await MetaMask();
+      setWallet( { account: [ ethAccount ], balance, chainId } );
       console.log( "this is pressed2" );
       setDisableConnect( Boolean( ethAccount && balance && chainId ) );
       console.log(
@@ -33,7 +37,7 @@ const Navbar = () => {
     }
   };
 
-  if ( pathname === "/signIn" || pathname === "/signUp" )
+  if ( !isAuthenticated && pathname === "/signIn" )
   {
     return null;
   } else
@@ -66,20 +70,29 @@ const Navbar = () => {
               About
             </Link>
             <Link
-              className="btn btn-ghost ml-24 rounded-full font-mono text-2xl tracking-widest"
-              href="/admin"
+              className={ `btn btn-ghost ml-24 rounded-full  font-mono text-2xl tracking-widest ${ pathname === "/profile/admin" ? "underline" : ""
+                }` }
+              href="/profile/admin"
             >
-              Admin
+              UserDetails
+            </Link>
+            <Link
+              className={ `btn btn-ghost ml-24 rounded-full  font-mono text-2xl tracking-widest ${ pathname === "/createUser" ? "underline" : ""
+                }` }
+              href="/createUser"
+            >
+              Create User
             </Link>
           </div>
         </div>
 
         <button
           className={ `btn btn-outline rounded-full text-lg mr-10  ${ disableConnect
-            ? "cursor-not-allowed opacity-50 rounded-full"
-            : "border-gray-300"
+              ? "cursor-not-allowed opacity-50 rounded-full"
+              : "border-gray-300"
             }` }
-          onClick={ () => {
+          onClick={ () =>
+          {
             handleConnect();
           } }
           disabled={ disableConnect }
@@ -106,7 +119,7 @@ const Navbar = () => {
               <div className="w-14 rounded-full">
                 <Image
                   alt="Tailwind CSS Navbar component"
-                  src="/images/profile.jpg"
+                  src={ user?.photoUrl }
                   width={ 56 }
                   height={ 56 }
                 />
@@ -132,12 +145,12 @@ const Navbar = () => {
                 <div className="justify-between text-pretty">
                   address
                   <div className="text-sm text-red-900">
-                    { wallet.account[0]
-                      ? `${ wallet.account[0].substring(
+                    { wallet.account[ 0 ]
+                      ? `${ wallet.account[ 0 ].substring(
                         0,
                         8,
-                      ) }...${ wallet?.account[0].substring(
-                        wallet?.account[0].length - 4,
+                      ) }...${ wallet?.account[ 0 ].substring(
+                        wallet?.account[ 0 ].length - 4,
                       ) }`
                       : "Connect to MetaMask" }
                   </div>
@@ -156,7 +169,8 @@ const Navbar = () => {
                   <div className="text-sm text-red-900">
                     { "" }
                     { wallet.chainId }
-                  </div>{ "" }
+                  </div>
+                  { "" }
                 </div>
               </li>
               <li className="justify-center">
