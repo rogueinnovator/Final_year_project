@@ -1,5 +1,5 @@
+import { useAppContext } from "@/context/myContext";
 import Web3 from "web3";
-
 // Load environment variables
 const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
 const API_URL = process.env.API_URL;

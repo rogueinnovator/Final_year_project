@@ -1,88 +1,98 @@
-"use client";
-import { useEffect, useState } from 'react';
-import { getAllUsers } from '@/services/userServices';
-import Image from 'next/image';
-import Link from 'next/link';
+import { useEffect, useState } from "react";
+import Web3 from "web3";
 
-const UserDetails = () => {
-    const [allUsers, setAllUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS; // Ensure this is set correctly
+const ABI = [
+  /* Add your contract ABI here */
+];
 
-    useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const response = await getAllUsers();
-                if (response.success) {
-                    setAllUsers(response.users);
-                } else {
-                    setError('Failed to fetch users');
-                }
-            } catch (err) {
-                setError('An error occurred while fetching users');
-            } finally {
-                setLoading(false);
-            }
-        };
+const CriminalDataComponent = () => {
+  const [web3, setWeb3] = useState(null);
+  const [account, setAccount] = useState("");
+  const [name, setName] = useState("");
+  const [crime, setCrime] = useState("");
+  const [CNIC, setCNIC] = useState("");
+  const [criminalInfo, setCriminalInfo] = useState(null);
 
-        fetchUsers();
-    }, []);
+  useEffect(() => {
+    const initWeb3 = async () => {
+      if (typeof window.ethereum !== "undefined") {
+        const web3Instance = new Web3(window.ethereum);
+        setWeb3(web3Instance);
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;
+        // Request account access
+        await window.ethereum.request({ method: "eth_requestAccounts" });
+        const accounts = await web3Instance.eth.getAccounts();
+        setAccount(accounts[0]);
+      } else {
+        alert("Please install MetaMask!");
+      }
+    };
 
-    return (
-        <div className="card bg-base-100 w-auto shadow-xl">
-            <div className="overflow-x-auto">
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Photo</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {allUsers.map((user) => (
-                            <tr key={user._id}>
-                                <td>
-                                    <div className="flex items-center gap-3">
-                                        <div className="avatar">
-                                            <div className="mask mask-squircle h-12 w-12">
-                                                <Image
-                                                    alt="User Photo"
-                                                    src={user.photoUrl || '/images/default.jpg'}
-                                                    width={56}
-                                                    height={56}
-                                                />
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div className="font-bold">{user.name}</div>
-                                            <div className="text-sm opacity-50">{user.email}</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>{user.email}</td>
-                                <td>
-                                    <Image
-                                        alt="User Photo"
-                                        src={user.photoUrl || '/images/default.jpg'}
-                                        width={50}
-                                        height={50}
-                                    />
-                                </td>
-                                <th>
-                                    <Link className="btn btn-ghost btn-xs" href={`/users/${user._id}`}>Details</Link>
-                                </th>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    );
+    initWeb3();
+  }, []);
+
+  const addCriminal = async () => {
+    if (web3) {
+      const contract = new web3.eth.Contract(ABI, CONTRACT_ADDRESS);
+      await contract.methods
+        .addCriminal(name, crime, CNIC)
+        .send({ from: account });
+      alert("Criminal data added successfully!");
+    }
+  };
+
+  const retrieveCriminal = async () => {
+    if (web3) {
+      const contract = new web3.eth.Contract(ABI, CONTRACT_ADDRESS);
+      const info = await contract.methods.getCriminal(CNIC).call();
+      setCriminalInfo({ name: info[0], crime: info[1] });
+    }
+  };
+
+  return (
+    <div>
+      <h1>Criminal Data Management</h1>
+      <div>
+        <h2>Add Criminal Data</h2>
+        <input
+          type="text"
+          placeholder="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Crime"
+          value={crime}
+          onChange={(e) => setCrime(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="CNIC"
+          value={CNIC}
+          onChange={(e) => setCNIC(e.target.value)}
+        />
+        <button onClick={addCriminal}>Add Criminal</button>
+      </div>
+      <div>
+        <h2>Retrieve Criminal Data</h2>
+        <input
+          type="text"
+          placeholder="CNIC"
+          value={CNIC}
+          onChange={(e) => setCNIC(e.target.value)}
+        />
+        <button onClick={retrieveCriminal}>Retrieve Criminal</button>
+        {criminalInfo && (
+          <div>
+            <p>Name: {criminalInfo.name}</p>
+            <p>Crime: {criminalInfo.crime}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
 
-export default UserDetails;
+export default CriminalDataComponent;

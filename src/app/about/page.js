@@ -1,11 +1,13 @@
 import React from "react";
 import Image from "next/image";
-const page = () => {
+const page = () =>
+{
   return (
-    <div className="sm:flex items-center max-w-screen-xl bg-white">
+    <div className="sm:flex items-center bg-white w-screen h-screen rounded-full">
       <div className="sm:w-1/2 p-10">
         <div className="image object-center text-center">
           <Image
+            className="h-full w-full rounded-full"
             src="/images/pic3.jpg"
             alt="this image"
             width="170"

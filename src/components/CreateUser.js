@@ -12,7 +12,7 @@ const CreateUser = () =>
     password: "",
   } );
   const [ file, setFile ] = useState( null );
-  const [ filePreview, setFilePreview ] = useState( "/images/profile.jpg" );
+  const [ filePreview, setFilePreview ] = useState( "/images/default.png" );
   //1. Handle credential changes
   const handleChange = ( e ) =>
   {
@@ -37,13 +37,11 @@ const CreateUser = () =>
     onSuccess: ( data ) =>
     {
       console.log( "user created successfully", data );
-
-    }
-    , onError: ( error ) =>
+    },
+    onError: ( error ) =>
     {
       console.log( "the following error happened", error );
-
-    }
+    },
   } );
   // Handle form submission
   const handleSubmit = async ( e ) =>
@@ -57,7 +55,6 @@ const CreateUser = () =>
     formData.append( "file", file );
     console.log( "this is user data", formData ?? "No form data available" );
     mutation.mutate( formData );
-
   };
 
   return (
@@ -83,7 +80,9 @@ const CreateUser = () =>
             />
           </div>
           <div className="text-center mt-4">
-            <h1 className=" flex m-4 font-extrabold leading-none tracking-tight justify-center text-gray-700 lg:text-3xl">Enter User Credentials</h1>
+            <h1 className=" flex m-4 font-extrabold leading-none tracking-tight justify-center text-gray-700 lg:text-3xl">
+              Enter User Credentials
+            </h1>
           </div>
           <ul className="py-4 text-gray-700 flex items-center justify-center">
             <form onSubmit={ handleSubmit }>
@@ -135,16 +134,21 @@ const CreateUser = () =>
                   required
                 />
               </div>
-              <div className="flex flex-col items-center justify-center my-2">
-                <input type="file" accept="image/*" onChange={ handleFileChange } required />
+              <div className="flex flex-col m-4 h-6">
+                <input
+                  className="file-input file-input-bordered file-input-primary w-full max-w-xs"
+                  type="file"
+                  accept="image/*"
+                  onChange={ handleFileChange }
+                  required
+                />
               </div>
               <div className="py-4 flex mx-8 mt-4">
                 <button
                   type="submit"
                   className="btn btn-outline btn-primary rounded-full mx-auto px-4"
                 >
-                  Upload Data
-                </button>
+                  Create                </button>
               </div>
             </form>
           </ul>

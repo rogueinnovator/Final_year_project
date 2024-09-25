@@ -14,19 +14,19 @@ const Navbar = () =>
     await logOut();
     router.push( "/signIn" );
   };
-  const { user, isAuthenticated, Admin } = useAppContext();
+  const { user, isAuthenticated, Admin, setWeb3, wallet, setWallet } = useAppContext();
   console.log( "this is authentication", isAuthenticated );
-  const initialState = { account: [], balance: "", chainId: "" };
-  const [ wallet, setWallet ] = useState( initialState );
+  // const initialState = { account: [], balance: "", chainId: "" };
+  // const [wallet, setWallet] = useState(initialState);
   const [ disableConnect, setDisableConnect ] = useState( false );
   const pathname = usePathname();
   const handleConnect = async () =>
   {
     try
     {
-      const [ ethAccount, chainId, balance ] = await MetaMask();
+      const [ ethAccount, chainId, balance, web3Instance ] = await MetaMask();
       setWallet( { account: [ ethAccount ], balance, chainId } );
-      console.log( "this is pressed2" );
+      setWeb3( web3Instance );
       setDisableConnect( Boolean( ethAccount && balance && chainId ) );
       console.log(
         `this is eth account ${ ethAccount }, this is balance ${ balance }, this is chainId ${ chainId }, this is disableConnect ${ disableConnect }`,
@@ -88,8 +88,8 @@ const Navbar = () =>
 
         <button
           className={ `btn btn-outline rounded-full text-lg mr-10  ${ disableConnect
-              ? "cursor-not-allowed opacity-50 rounded-full"
-              : "border-gray-300"
+            ? "cursor-not-allowed opacity-50 rounded-full"
+            : "border-gray-300"
             }` }
           onClick={ () =>
           {
