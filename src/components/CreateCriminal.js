@@ -29,14 +29,14 @@ const CreateCriminal = () =>
 
   useEffect( () =>
   {
-    // Check if all required fields are filled to enable the button, excluding 'address'
     const requiredFields = { ...credentials };
-    delete requiredFields.address; // Exclude address from the validation
+    delete requiredFields.address;
     const requiredFieldsFilled = Object.values( requiredFields ).every(
       ( field ) => field !== ""
     );
     setDisable( !requiredFieldsFilled );
   }, [ credentials ] );
+
   const handleInputChange = ( e ) =>
   {
     const { name, value } = e.target;
@@ -45,6 +45,7 @@ const CreateCriminal = () =>
       [ name ]: value,
     } ) );
   };
+
   const handleFileChange = ( e ) =>
   {
     const selectedFile = e.target.files[ 0 ];
@@ -53,6 +54,7 @@ const CreateCriminal = () =>
       setPreview( URL.createObjectURL( selectedFile ) );
     }
   };
+
   const addCriminals = async () =>
   {
     if ( web3 )
@@ -99,7 +101,7 @@ const CreateCriminal = () =>
               <tbody>
                 <tr>
                   <td>
-                    <label className="input input-bordered flex items-center gap-2">
+                    <label className="input input-bordered flex items-center gap-2 text-white">
                       <input
                         type="text"
                         name="name"
@@ -112,7 +114,7 @@ const CreateCriminal = () =>
                     </label>
                   </td>
                   <td>
-                    <label className="input input-bordered flex items-center gap-2">
+                    <label className="input input-bordered flex items-center gap-2 text-white">
                       <input
                         type="text"
                         name="email"
@@ -125,7 +127,7 @@ const CreateCriminal = () =>
                     </label>
                   </td>
                   <td>
-                    <label className="input input-bordered flex items-center gap-2">
+                    <label className="input input-bordered flex items-center gap-2 text-white">
                       <input
                         type="text"
                         name="fatherName"
@@ -140,7 +142,7 @@ const CreateCriminal = () =>
                 </tr>
                 <tr>
                   <td>
-                    <label className="input input-bordered flex items-center gap-2">
+                    <label className="input input-bordered flex items-center gap-2 text-white">
                       <input
                         type="text"
                         name="gender"
@@ -153,7 +155,7 @@ const CreateCriminal = () =>
                     </label>
                   </td>
                   <td>
-                    <label className="input input-bordered flex items-center gap-2">
+                    <label className="input input-bordered flex items-center gap-2 text-white">
                       <input
                         type="text"
                         name="dob"
@@ -166,7 +168,7 @@ const CreateCriminal = () =>
                     </label>
                   </td>
                   <td>
-                    <label className="input input-bordered flex items-center gap-2">
+                    <label className="input input-bordered flex items-center gap-2 text-white">
                       <input
                         type="text"
                         name="address"
@@ -185,12 +187,12 @@ const CreateCriminal = () =>
           <h1 className="flex mt-4 font-extrabold leading-none tracking-tight justify-center text-gray-700 lg:text-3xl">
             Criminal Record Information
           </h1>
-          <div className="py-4 text-gray-700 flex items-center justify-between">
+          <div className="py-4 text-white flex items-center justify-between">
             <table className="table mx-3">
               <tbody>
                 <tr>
                   <td>
-                    <label className="input input-bordered flex items-center gap-2">
+                    <label className="input input-bordered flex items-center gap-2 text-white">
                       <input
                         type="text"
                         name="offenseDescription"
@@ -203,7 +205,7 @@ const CreateCriminal = () =>
                     </label>
                   </td>
                   <td>
-                    <label className="input input-bordered flex items-center gap-2">
+                    <label className="input input-bordered flex items-center gap-2 text-white">
                       <input
                         type="text"
                         name="offenseCode"
@@ -216,7 +218,7 @@ const CreateCriminal = () =>
                     </label>
                   </td>
                   <td>
-                    <label className="input input-bordered flex items-center gap-2">
+                    <label className="input input-bordered flex items-center gap-2 text-white">
                       <input
                         type="text"
                         name="offenseDate"
@@ -229,7 +231,7 @@ const CreateCriminal = () =>
                     </label>
                   </td>
                   <td>
-                    <label className="input input-bordered flex items-center gap-2">
+                    <label className="input input-bordered flex items-center gap-2 text-white">
                       <input
                         type="text"
                         name="caseId"
@@ -244,7 +246,7 @@ const CreateCriminal = () =>
                 </tr>
                 <tr>
                   <td>
-                    <label className="input input-bordered flex items-center gap-2">
+                    <label className="input input-bordered flex items-center gap-2 text-white">
                       <input
                         type="text"
                         name="investigationOfficer"
@@ -257,7 +259,7 @@ const CreateCriminal = () =>
                     </label>
                   </td>
                   <td>
-                    <label className="input input-bordered flex items-center gap-2">
+                    <label className="input input-bordered flex items-center gap-2 text-white">
                       <input
                         type="text"
                         name="courtVerdict"
@@ -270,7 +272,7 @@ const CreateCriminal = () =>
                     </label>
                   </td>
                   <td>
-                    <label className="input input-bordered flex items-center gap-2">
+                    <label className="input input-bordered flex items-center gap-2 text-white">
                       <input
                         type="text"
                         name="prisonId"
@@ -283,7 +285,7 @@ const CreateCriminal = () =>
                     </label>
                   </td>
                   <td>
-                    <label className="input input-bordered flex items-center gap-2">
+                    <label className="input input-bordered flex items-center gap-2 text-white">
                       <input
                         type="text"
                         name="prisonLocation"
@@ -303,7 +305,7 @@ const CreateCriminal = () =>
             <button
               type="submit"
               className="btn btn-outline btn-primary rounded-full mr-7"
-              disabled={ disable } // Button will be disabled if any required field is not filled.
+              disabled={ disable }
             >
               { disable ? "Enter Details" : "Create" }
             </button>
@@ -311,7 +313,7 @@ const CreateCriminal = () =>
               className="file-input file-input-bordered file-input-primary max-w-xs mr-8"
               type="file"
               accept="image/*"
-              onChange={ handleFileChange } // Uncomment and implement this when adding image handling logic
+              onChange={ handleFileChange }
               required
             />
           </div>

@@ -2,6 +2,7 @@ import React from "react";
 import CreateCriminal from "@/components/CreateCriminal";
 import UserDetails from "@/components/UserDetails";
 import CriminalsDetail from "@/components/CriminalsDetail";
+import RetrieveEntity from "@/components/RetrieveEntity";
 
 const Page = () =>
 {
@@ -15,9 +16,7 @@ const Page = () =>
           <CriminalsDetail />
         </div>
         <div id="item3" className="carousel-item h-screen w-screen">
-          <img
-            src="https://img.daisyui.com/images/stock/photo-1414694762283-acccc27bca85.webp"
-            className="w-full h-full object-cover" />
+          <RetrieveEntity />
         </div>
         <div id="item4" className="carousel-item h-screen w-screen">
           <img
@@ -28,7 +27,7 @@ const Page = () =>
       <div className="flex w-full justify-center gap-2 absolute bottom-0 mb-10">
         <a href="#item1" className="btn btn-outline btn-primary">Create Entity</a>
         <a href="#item2" className="btn btn-outline btn-primary">All Entities</a>
-        <a href="#item3" className="btn btn-outline btn-warning">Delete Entity</a>
+        <a href="#item3" className="btn btn-outline btn-primary">Retrieve Entity</a>
       </div>
     </div>
   );

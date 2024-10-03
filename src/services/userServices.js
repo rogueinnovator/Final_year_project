@@ -22,7 +22,6 @@ export async function createUser(formData) {
   try {
     const response = await fetch(`${baseURL}/createUser`, {
       method: "POST",
-
       body: formData,
     });
 

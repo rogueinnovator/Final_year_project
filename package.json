@@ -11,10 +11,12 @@
   "dependencies": {
     "@metamask/detect-provider": "^2.0.0",
     "@tanstack/react-query": "^5.54.1",
+    "@tensorflow/tfjs-node": "^4.21.0",
     "@web3-onboard/metamask": "^2.0.2",
     "axios": "^1.7.2",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.5",
+    "face-api.js": "^0.22.2",
     "framer-motion": "^11.3.17",
     "fs-extra": "^11.2.0",
     "jose": "^5.8.0",
@@ -26,6 +28,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-query": "^3.39.3",
+    "react-webcam": "^7.2.0",
     "web3": "^4.11.1",
     "web3modal": "^1.9.12"
   },
