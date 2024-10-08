@@ -1,3 +1,3 @@
 [submodule "block_chain_submodule"]
-	path = block_chain_submodule
-	url = git@github.com:rogueinnovator/block_chain_submodule.git
+	path = src/blockchain
+	url = git@github.com:rogueinnovatorc//block_chain_submodule.git
