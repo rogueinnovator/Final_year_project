@@ -16,7 +16,7 @@ export async function GET ( { params } )
     return NextResponse.json( { data: user, success: true } );
   } catch ( error )
   {
-    console.error( "error occured while retrieving the GetAllUsers:", error );
+    console.error( "error occurred while retrieving User:", error );
     return NextResponse.json( {
       success: false,
       message: "Error while retrieving the data ",

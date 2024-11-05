@@ -1,10 +1,10 @@
-import CreateCriminal from '@/components/CreateCriminal';
+import CreateEntity from '@/components/CreateEntity';
 import React from 'react';
 
 const page = () =>
 {
     return (
-        <CreateCriminal />
+        <CreateEntity />
     );
 };
 

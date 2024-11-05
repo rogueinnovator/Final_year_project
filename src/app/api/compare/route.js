@@ -1,46 +1,67 @@
-import { IncomingForm } from 'formidable';
+
 import { spawn } from 'child_process';
 import { NextResponse } from 'next/server';
-import { match } from 'assert';
 import path from "path";
 import fs from "fs-extra";
-// Disable body parser for the form data
-// export const config = {
-//   api: {
-//     bodyParser: false,
-//   },
-// };
-const UPLOAD_DIR = path.resolve( process.env.ROOT_PATH || "", "public/uploaded" );
+
+const UPLOAD_DIR = path.resolve( process.env.ROOT_PATH || "", "public/tempPics" );
+
 export async function POST ( request )
 {
   const data = await request.formData();
   const body = Object.fromEntries( data );
   const file = body.image;
-  if ( file )
+
+  try
   {
-    const photoUrl = file.name;
-    const buffer = Buffer.from( await file.arrayBuffer() );
-    await fs.ensureDir( UPLOAD_DIR );
-    const photoPath = path.resolve( UPLOAD_DIR, photoUrl );
-    fs.writeFile( photoPath, buffer );
+    if ( file )
+    {
+      const photoUrl = file.name;
+      const buffer = Buffer.from( await file.arrayBuffer() );
+      await fs.ensureDir( UPLOAD_DIR );
+      const photoPath = path.resolve( UPLOAD_DIR, photoUrl );
+      await fs.writeFile( photoPath, buffer );
+    }
+
+    const uploadedImagePath = path.join( UPLOAD_DIR, file.name );
+
+    // Wrap the python process in a promise
+    const result = await new Promise( ( resolve, reject ) =>
+    {
+      const pythonProcess = spawn( 'bash', [ '-c', `source ~/Desktop/Final_year_project/src/env/bin/activate && python3 ~/Desktop/Final_year_project/src/app/api/python/compare.py ${ uploadedImagePath }` ] );
+
+      pythonProcess.stdout.on( 'data', ( data ) =>
+      {
+        const result = data.toString().trim();
+        resolve( result );
+      } );
+
+      pythonProcess.stderr.on( 'data', ( data ) =>
+      {
+        const error = data.toString().trim();
+        reject( new Error( `Error in Python script: ${ error }` ) );
+      } );
+
+      pythonProcess.on( 'error', ( error ) =>
+      {
+        reject( new Error( `Failed to start process: ${ error.message }` ) );
+      } );
+    } );
+    if ( result === "No match found." )
+    {
+      return NextResponse.json( { status: 404, result } );
+
+    }
+    return NextResponse.json( { status: 200, message: "Success", result } );
+
+  } catch ( error )
+  {
+    console.error( "Error occurred:", error );
+    return NextResponse.json( {
+      message: "Error during image comparison",
+      status: 500,
+      success: false,
+      error: error.message
+    } );
   }
-  // Get the uploaded image path
-  const uploadedImagePath = path.join( "../../../public/uploaded", file.name );
-  console.log( uploadedImagePath );
-  // Call the Python script using child_process
-  const pythonProcess = spawn( 'python3', [ '../python/compare.py', uploadedImagePath ] );
-  console.log( pythonProcess.stdout );
-  pythonProcess.stdout.on( 'data', ( data ) =>
-  {
-    const result = data.toString().trim();
-
-    // Send the result back to the client
-    NextResponse.json( { status: 200, message: "Success ", result: result } );
-  } );
-
-  pythonProcess.stderr.on( 'data', ( data ) =>
-  {
-    NextResponse.json( { status: 500, message: `Error in python script error: ${ data.toString }` } );
-  } );
-
 }

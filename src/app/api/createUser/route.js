@@ -6,69 +6,66 @@ import path from "path";
 import fs from "fs-extra";
 import { renameFile } from "@/helper/renameFile";
 
-const UPLOAD_DIR = path.resolve(process.env.ROOT_PATH || "", "public/uploads");
+const UPLOAD_DIR = path.resolve( process.env.ROOT_PATH || "", "public/UserImages" );
 
 connectDb();
 
-export async function POST(request) {
-  try {
+export async function POST ( request )
+{
+  try
+  {
     const formData = await request.formData();
-    const body = Object.fromEntries(formData);
+    const body = Object.fromEntries( formData );
+    const file = body.file;
     const { name, email, id, password } = body;
+    const photoUrl = renameFile( file.name, id );
+    console.log( file, name, email );
 
-    const file = body.file || null;
-    console.log(
-      "this is file",
-      file,
-      "and these are the details",
-      name,
-      email,
-      id,
-      password,
-    );
-    const photoUrl = renameFile(file.name, id);
-    console.log(`this is photoUrl ${photoUrl}`);
-    const compareUser = await User.findOne({ email });
-    if (compareUser) {
-      return NextResponse.json({
+    const compareUser = await User.findOne( { email } );
+    if ( compareUser )
+    {
+      return NextResponse.json( {
         message: "A user with this email already exists",
         status: 409,
         success: false,
-      });
+      } );
     }
-    const user = new User({
+    const user = new User( {
       name,
       email,
       id,
       password,
-    });
-    const salt = await bcrypt.genSalt(10);
-    user.password = bcrypt.hashSync(user.password, salt);
+    } );
+    const salt = await bcrypt.genSalt( 10 );
+    user.password = bcrypt.hashSync( user.password, salt );
 
-    if (file) {
-      const buffer = Buffer.from(await file.arrayBuffer());
-      await fs.ensureDir(UPLOAD_DIR);
-      const photoPath = path.resolve(UPLOAD_DIR, photoUrl);
-      await fs.writeFile(photoPath, buffer);
-      user.photoUrl = path.join("/uploads", photoUrl);
+    if ( file )
+    {
+      const buffer = Buffer.from( await file.arrayBuffer() );
+      await fs.ensureDir( UPLOAD_DIR );
+      const photoPath = path.resolve( UPLOAD_DIR, photoUrl );
+      await fs.writeFile( photoPath, buffer );
+      user.photoUrl = path.join( "/UserImages", photoUrl );
     }
 
     // Save the user instance in the database
     const createdUser = await user.save();
-    if (createdUser) {
-      return NextResponse.json({
+    if ( createdUser )
+    {
+      return NextResponse.json( {
         message: "User created successfully with credentials",
         createdUser,
         status: 201,
         success: true,
-      });
+      } );
     }
-  } catch (error) {
-    console.error("console error in cache", error);
-    return NextResponse.json({
+  } catch ( error )
+  {
+    console.error( "console error in cache", error );
+    return NextResponse.json( {
       message: "Error creating user instance",
       status: 500,
       success: false,
-    });
+    } );
   }
 }

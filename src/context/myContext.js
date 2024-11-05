@@ -22,6 +22,7 @@ const ContextProvider = ( { children } ) =>
     if ( success )
     {
       setUser( data );
+      console.log( data );
       setIsAuthenticated( true );
       if ( data.isAdmin )
       {
@@ -47,7 +48,7 @@ const ContextProvider = ( { children } ) =>
       }
     };
 
-    setUpContractInstance();
+    setUpContractInstance(); web3;
   }, [ web3 ] );
   console.log( "contract instance", contractInstance, "web 3 ", web3 );
 
@@ -59,6 +60,7 @@ const ContextProvider = ( { children } ) =>
         isAuthenticated,
         Admin,
         setWeb3,
+        web3,
         setWallet,
         wallet,
         contractInstance,

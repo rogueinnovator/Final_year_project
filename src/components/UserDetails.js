@@ -33,6 +33,7 @@ const UserDetails = () =>
             console.log( "Error deleting user", error );
         },
     } );
+    console.log( "all users", allUsers );
 
     const handleDelete = ( id ) =>
     {
@@ -48,13 +49,13 @@ const UserDetails = () =>
         <div className="card bg-base-100 w-auto shadow-xl">
             <div className="card bg-base-100 w-auto shadow-xl">
                 <div className="overflow-x-auto">
-                    <h1 className="flex m-4 text-4xl font-extrabold leading-none tracking-tight justify-center text-gray-700 md:text-5xl lg:text-6xl">
-                        Users Detail
+                    <h1 className="flex m-4 text-2xl font-extrabold leading-none tracking-tight justify-center text-gray-700 md:text-5xl lg:text-4xl">
+                        Users Details
                     </h1>
                 </div>
             </div>
             <div className="overflow-x-auto">
-                { allUsers.length === 0 ? ( <> <h1 className="flex m-4 text-4xl font-extrabold leading-none tracking-tight justify-center text-red-600 md:text-5xl lg:text-6xl">
+                { allUsers.length === 0 ? ( <> <h1 className="flex m-4 text-4xl font-extrabold leading-none tracking-tight justify-center text-red-600 md:text-5xl lg:text-4xl">
                     No user found
                 </h1></> ) : ( <table className="table">
                     <thead>

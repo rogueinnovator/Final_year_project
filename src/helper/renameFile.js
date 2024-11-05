@@ -1,13 +1,13 @@
-export function renameFile ( fileName, roll )
+export function renameFile ( fileName, id )
 {
   const regex = /\.(png|jpe?g)$/i;
-  const rollNo = roll;
+  const Id = id;
 
 
   if ( regex.test( fileName ) )
   {
-    const parts = fileName.split( regex );
-    return `${ rollNo }${ regex.exec( fileName )[ 0 ] }`;
+    fileName.split( regex );
+    return `${ Id }${ regex.exec( fileName )[ 0 ] }`;
   }
 
   return false;

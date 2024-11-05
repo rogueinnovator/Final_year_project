@@ -15,11 +15,9 @@ const Navbar = () =>
     router.push( "/signIn" );
   };
   const { user, isAuthenticated, Admin, setWeb3, wallet, setWallet } = useAppContext();
-  console.log( "this is authentication", isAuthenticated );
-  // const initialState = { account: [], balance: "", chainId: "" };
-  // const [wallet, setWallet] = useState(initialState);
   const [ disableConnect, setDisableConnect ] = useState( false );
   const pathname = usePathname();
+  console.log( "admin", Admin );
   const handleConnect = async () =>
   {
     try
@@ -28,9 +26,6 @@ const Navbar = () =>
       setWallet( { account: [ ethAccount ], balance, chainId } );
       setWeb3( web3Instance );
       setDisableConnect( Boolean( ethAccount && balance && chainId ) );
-      console.log(
-        `this is eth account ${ ethAccount }, this is balance ${ balance }, this is chainId ${ chainId }, this is disableConnect ${ disableConnect }`,
-      );
     } catch ( error )
     {
       console.error( error );
@@ -62,27 +57,35 @@ const Navbar = () =>
             >
               Home
             </Link>
-            <Link
+            {/* <Link
               className={ `btn btn-ghost ml-24 rounded-full  font-mono text-2xl tracking-widest ${ pathname === "/about" ? "underline" : ""
                 }` }
               href="/about"
             >
               About
-            </Link>
-            <Link
+            </Link> */}
+            { Admin && ( <Link
               className={ `btn btn-ghost ml-24 rounded-full  font-mono text-2xl tracking-widest ${ pathname === "/profile/admin" ? "underline" : ""
                 }` }
               href="/profile/admin"
             >
-              UserDetails
-            </Link>
-            <Link
+              UsersDetails
+            </Link> ) }
+            { Admin && ( <Link
               className={ `btn btn-ghost ml-24 rounded-full  font-mono text-2xl tracking-widest ${ pathname === "/createUser" ? "underline" : ""
                 }` }
               href="/createUser"
             >
-              Create User
-            </Link>
+              CreateUser
+            </Link> ) }
+            { Admin && ( <Link
+              className={ `btn btn-ghost ml-24 rounded-full  font-mono text-2xl tracking-widest ${ pathname === "/createUser" ? "underline" : ""
+                }` }
+              href="/updateCriminal"
+            >
+              UpdateCriminal
+            </Link> ) }
+
           </div>
         </div>
 
@@ -104,11 +107,11 @@ const Navbar = () =>
 
         <div className="flex-none gap-2">
           <div className="form-control">
-            <input
+            {/* <input
               type="text"
               placeholder="Search"
               className="input rounded-full w-24 md:w-auto"
-            />
+            /> */}
           </div>
           <div className="dropdown dropdown-end">
             <div

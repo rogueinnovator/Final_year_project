@@ -130,13 +130,13 @@ const Navbar = () => {
         </button>
 
         <div className="flex-none gap-2">
-          <div className="form-control">
+          {/* <div className="form-control">
             <input
               type="text"
               placeholder="Search"
               className="input rounded-full w-24 md:w-auto"
             />
-          </div>
+          </div> */}
           <div className="dropdown dropdown-end">
             <div
               tabIndex={0}

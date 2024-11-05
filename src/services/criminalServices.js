@@ -1,51 +1,77 @@
 const baseURL = process.env.BASE_URL;
-//1.Create a Criminal Entity
-export async function createCriminal(credentils) {
-  try {
-    const response = await fetch(`${baseURL}/criminalata`, {
+//1.Save criminal Pics
+export async function saveCriminalPic ( formData )
+{
+  try
+  {
+    const response = await fetch( `${ baseURL }/criminalData`, {
       method: "POST",
-      body: JSON.stringify(credentils),
-    });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      body: formData
+    } );
+    if ( !response.ok )
+    {
+      throw new Error( `HTTP error! status: ${ response.status }` );
     }
     return await response.json();
-  } catch (error) {
-    handleFetchError(error);
+  } catch ( error )
+  {
+    handleFetchError( error );
   }
+
 }
-//2.Get all the Criminals
-export async function getAllCriminals() {
-  try {
-    const response = await fetch(`${baseURL}/criminalData`, {
-      method: "GET",
-    });
-    if (!response.ok) {
-      throw new Error(`Http error! status: ${response.status}`);
+//2.compare the facial data 
+export async function faceCompare ( formData )
+{
+  try
+  {
+    const response = await fetch( `${ baseURL }/compare`, {
+      method: "POST",
+      body: formData
+    } );
+    if ( !response.ok )
+    {
+      throw new Error( `HTTP error! status: ${ response.status }` );
+
     }
     return await response.json();
-  } catch (error) {}
+
+  } catch ( error )
+  {
+    handleFetchError( error );
+
+  }
+
 }
-//3.Delete a user with a specific ID
-export async function deleteUser(criminalId) {
-  try {
-    const response = fetch(`${baseURL}/criminalData/${criminalId}`, {
-      method: "DELETE",
-    });
-    if (!response.ok) {
-      throw new Error(`Http error! status ${response.status}`);
+//2. Get a criminal data
+export async function CriminalPhoto ( cnic )
+{
+  try
+  {
+    const criminalCnic = cnic;
+    const response = await fetch( `${ baseURL }/criminalData/${ criminalCnic }`, {
+      method: "GET",
+    } );
+    if ( !response.ok )
+    {
+      throw new Error( `HTTP error! status: ${ response.status }` );
     }
-  } catch (error) {
-    handleFetchError(error);
+    const data = await response.json();
+    return data;
+  } catch ( error )
+  {
+    handleFetchError( error );
   }
 }
 // function for Error handling
-function handleFetchError(error) {
-  if (error.response) {
-    console.error("Error status:", error.response.status);
-    console.error("Error message:", error.message);
-  } else {
-    console.error("Error:", error.message);
+function handleFetchError ( error )
+{
+  if ( error.response )
+  {
+    console.error( "Error status:", error.response.status );
+    console.error( "Error message:", error.message );
+  } else
+  {
+    console.error( "Error:", error.message );
   }
   throw error;
 }

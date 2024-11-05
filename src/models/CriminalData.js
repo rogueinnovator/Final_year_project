@@ -1,19 +1,15 @@
 import mongoose, { model, Schema } from "mongoose";
 
-const CriminalSchema = new Schema({
-  id: {
-    type: String,
-    required: true,
-  },
+const CriminalSchema = new Schema( {
   cnic: {
     type: String,
     required: true,
     unique: true,
   },
-  photo: {
+  photoUrl: {
     type: String,
   },
-});
+} );
 
 export const Criminal =
-  mongoose.model.criminal || mongoose.model("criminal", CriminalSchema);
+  mongoose.models.Criminal || mongoose.model( "Criminal", CriminalSchema );

@@ -1,113 +1,102 @@
 "use client";
-import { useAppContext } from '@/context/myContext';
-import Image from 'next/image';
-import React, { useEffect, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { deleteUser, getAllUsers } from '@/services/userServices';
+import { useAppContext } from "@/context/myContext";
+import { useState, useEffect } from "react";
+import sanitizeData from "@/helper/sanitizeData";
 
 const CriminalsDetail = () =>
 {
-    const [ allUsers, setAllUsers ] = useState( [] );
+    const { web3, wallet, contractInstance } = useAppContext();
+    const account = wallet?.account[ 0 ];
+    const [ allCriminals, setAllCriminals ] = useState( [] );
+    const [ loading, setLoading ] = useState( false );
 
-    const fetchUsers = async () =>
+    const fetchCriminals = async () =>
     {
+        if ( !web3 || !contractInstance ) return;
+        setLoading( true );
         try
         {
-            const response = await getAllUsers();
-            setAllUsers( response.users );
+            const data = await contractInstance.methods.getAllCriminals().call( { from: account } );
+            const criminals = sanitizeData( data ); // Sanitize the data if necessary
+
+            const formattedCriminals = criminals.map( ( criminal ) =>
+            {
+                return {
+                    name: criminal.personal.name || "",
+                    fatherName: criminal.personal.fatherName || "",
+                    cnic: criminal.personal.cnic || "",
+                    gender: criminal.personal.gender || "",
+                    dob: criminal.personal.dob || "",
+                    location: criminal.personal.location || ""
+                };
+            } );
+
+            setAllCriminals( formattedCriminals );
+
         } catch ( error )
         {
-            console.error( "Error fetching users", error );
+            console.error( "Error fetching criminals", error );
+        } finally
+        {
+            setLoading( false );
         }
-    };
-
-    const deleteMutation = useMutation( {
-        mutationFn: deleteUser,
-        onSuccess: ( variables ) =>
-        {
-            setAllUsers( ( prevUsers ) => prevUsers.filter( ( user ) => user._id !== variables.userId ) );
-        },
-        onError: ( error ) =>
-        {
-            console.log( "Error deleting user", error );
-        },
-    } );
-
-    const handleDelete = ( id ) =>
-    {
-        deleteMutation.mutate( id );
     };
 
     useEffect( () =>
     {
-        fetchUsers();
-    }, [] );
+        fetchCriminals();
+    }, [ web3, contractInstance ] ); 
 
     return (
-        <div className="card bg-base-100 w-auto shadow-xl h-screen w-screen">
-            <div className="card bg-base-100 w-auto shadow-xl ">
-                <div className="overflow-x-auto">
-                    <h1 className="flex m-4 text-4xl font-extrabold leading-none tracking-tight justify-center text-gray-700 md:text-5xl lg:text-6xl">
-                        All Entities
-                    </h1>
+        <div className="flex-auto justify-center px-5">
+            <div className="card bg-base-100 shadow-xl h-screen w-screen">
+                <div className="card bg-base-100 w-auto shadow-xl">
+                    <div className="overflow-x-auto">
+                        <h1 className="flex m-4 text-4xl font-extrabold leading-none tracking-tight justify-center text-gray-700 md:text-5xl lg:text-6xl">
+                            All Criminals
+                        </h1>
+
+                    </div>
                 </div>
-            </div>
-            <div className="overflow-x-auto">
-                { allUsers.length === 0 ? ( <> <h1 className="flex m-4 text-4xl font-extrabold leading-none tracking-tight justify-center text-red-600 md:text-5xl lg:text-6xl">
-                    No user found
-                </h1></> ) : ( <table className="table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>ID</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        { allUsers.map( ( user ) => (
-                            <tr key={ user._id }>
-                                <td>
-                                    <div className="flex items-center gap-3 ml-6">
-                                        <div className="avatar">
-                                            <div className="mask mask-squircle h-12 w-12">
-                                                <Image
-                                                    alt="User profile"
-                                                    src={ user.photoUrl }
-                                                    width={ 56 }
-                                                    height={ 56 }
-                                                />
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div className="font-bold pl-4 ">{ user.name.toUpperCase() }</div>
-                                            <div className="text-sm opacity-50">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>{ user.email }</td>
-                                <td>{ user.id }</td>
 
-                                <td>
-                                    <button
-                                        className="btn btn-outline btn-warning rounded-full mx-auto px-4"
-                                        onClick={ () => handleDelete( user._id ) }
-                                        disabled={ deleteMutation.isLoading }
-                                    >
-                                        { deleteMutation.isLoading ? "Deleting..." : "Delete" }
-                                    </button>
-                                </td>
-                                {/* <th>
-                                    <Link className="btn btn-outline btn-success rounded-full mx-auto px-4" href={ `/users/${ user._id }` }>
-                                        Details
-                                    </Link>
-                                </th> */}
-                            </tr>
-                        ) ) }
-                    </tbody>
-                </table> ) }
+                { loading && (
+                    <div className="flex justify-center items-center my-4">
+                        <span className="loading loading-ring loading-lg"></span>
+                    </div>
+                ) }
 
+                <div className="overflow-x-auto">
+                    { allCriminals.length === 0 && !loading ? (
+                        <h1 className="flex m-4 text-4xl font-extrabold leading-none tracking-tight justify-center text-red-600 md:text-5xl lg:text-6xl">
+                            No user found
+                        </h1>
+                    ) : (
+                        <table className="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Father Name</th>
+                                    <th>CNIC</th>
+                                    <th>Gender</th>
+                                    <th>Date of Birth</th>
+                                    <th>Location</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                { allCriminals.map( ( criminal, index ) => (
+                                    <tr key={ index }>
+                                        <td>{ criminal.name }</td>
+                                        <td>{ criminal.fatherName }</td>
+                                        <td>{ criminal.cnic }</td>
+                                        <td>{ criminal.gender }</td>
+                                        <td>{ criminal.dob }</td>
+                                        <td>{ criminal.location }</td>
+                                    </tr>
+                                ) ) }
+                            </tbody>
+                        </table>
+                    ) }
+                </div>
             </div>
         </div>
     );

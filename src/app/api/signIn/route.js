@@ -9,11 +9,13 @@ export async function POST ( request )
   const { email, password } = await request.json();
   try
   {
+
     //1. Check if user with the given email exists
     const user = await User.findOne( { email: email } );
 
     if ( !user )
-    {
+    {     console.log( password, email );
+
       return NextResponse.json(
         {
           message: "User not found",
@@ -49,8 +51,8 @@ export async function POST ( request )
     const response = NextResponse.json(
       {
         message: "Logged in successfully",
-        user,
         success: true,
+        user,
       },
       { status: 200 },
     );

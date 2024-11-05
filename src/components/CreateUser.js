@@ -3,6 +3,8 @@ import { useState } from "react";
 import Image from "next/image";
 import { createUser } from "@/services/userServices";
 import { useMutation } from "@tanstack/react-query";
+import toast, { Toaster } from "react-hot-toast";
+
 const CreateUser = () =>
 {
   const [ credentials, setCredentials ] = useState( {
@@ -13,7 +15,8 @@ const CreateUser = () =>
   } );
   const [ file, setFile ] = useState( null );
   const [ filePreview, setFilePreview ] = useState( "/images/default.png" );
-  //1. Handle credential changes
+
+  // 1. Handle credential changes
   const handleChange = ( e ) =>
   {
     setCredentials( {
@@ -21,7 +24,8 @@ const CreateUser = () =>
       [ e.target.name ]: e.target.value,
     } );
   };
-  //2.Handle file change and preview in the form
+
+  // 2. Handle file change and preview in the form
   const handleFileChange = ( e ) =>
   {
     const selectedFile = e.target.files[ 0 ];
@@ -36,13 +40,26 @@ const CreateUser = () =>
     mutationFn: createUser,
     onSuccess: ( data ) =>
     {
-      console.log( "user created successfully", data );
+      if ( data.success )
+      {
+        toast.success( data.message, {
+          duration: 4000, // Disappear after 2 seconds
+        } );
+      }
+      toast.error( data.message, {
+        duration: 4000, // Disappear after 2 seconds
+      } );
     },
     onError: ( error ) =>
     {
-      console.log( "the following error happened", error );
+      // Error toast message
+      toast.error( "Error occurred while creating user.", {
+        duration: 2000, // Disappear after 2 seconds
+      } );
+      console.log( "The following error happened", error );
     },
   } );
+
   // Handle form submission
   const handleSubmit = async ( e ) =>
   {
@@ -53,12 +70,12 @@ const CreateUser = () =>
     formData.append( "id", credentials.id );
     formData.append( "password", credentials.password );
     formData.append( "file", file );
-    console.log( "this is user data", formData ?? "No form data available" );
     mutation.mutate( formData );
   };
 
   return (
     <div>
+      <Toaster /> 
       <div className="relative flex flex-col items-center justify-center min-h-screen">
         <div className="card bg-base-100 w-2/5 shadow-xl">
           <div className="rounded-t-lg h-32 overflow-hidden">
@@ -80,7 +97,7 @@ const CreateUser = () =>
             />
           </div>
           <div className="text-center mt-4">
-            <h1 className=" flex m-4 font-extrabold leading-none tracking-tight justify-center text-gray-700 lg:text-3xl">
+            <h1 className="flex m-4 font-extrabold leading-none tracking-tight justify-center text-gray-700 lg:text-3xl">
               Enter User Credentials
             </h1>
           </div>
@@ -148,7 +165,8 @@ const CreateUser = () =>
                   type="submit"
                   className="btn btn-outline btn-primary rounded-full mx-auto px-4"
                 >
-                  Create                </button>
+                  Create
+                </button>
               </div>
             </form>
           </ul>
